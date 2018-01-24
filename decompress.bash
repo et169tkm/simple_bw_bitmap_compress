@@ -2,14 +2,18 @@
 
 # Usage: bash decompress.bash <infile> <width> <height> <outfile>
 
+# assuming 8-bit numbers, 2 hex digits = one number
+hex_digit_per_pixel=2
+
 input_file_name=$1
 width=$2
 height=$3
 output_file_name=$4
-hex_digit_per_pixel=2
 
 image_r8_hex='' # buffer to store rgba data of the image in hex format
-next_pixel='FF'
+color1='FF'
+color2='00'
+next_pixel=$color1
 # What the following command chain does:
 # 1. print the input file as hex
 # 2. format it as one pixel per line (e.g. 8bit image = 2 hex digits)
@@ -24,10 +28,10 @@ for hex_val in `xxd -p "$input_file_name" | fold -w "$hex_digit_per_pixel" | tr 
         image_r8_hex=$image_r8_hex$buf
     fi
     # switch to another colour
-    if [ "$next_pixel" = 'FF' ]; then
-        next_pixel='00'
+    if [ "$next_pixel" = "$color1" ]; then
+        next_pixel="$color2"
     else
-        next_pixel='FF'
+        next_pixel="$color1"
     fi
 done
 echo -n "$image_r8_hex" | xxd -p -r | convert -size "$width"x"$height" -depth 8 rgb:- "$output_file_name"
