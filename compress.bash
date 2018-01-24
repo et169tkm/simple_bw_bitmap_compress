@@ -3,7 +3,9 @@
 # Usage: bash compress.bash <infile>
 # the output is printed to stdout (user readable info is printed to stderr)
 
+# Use 8 bit pixel numbers, the maximum number stored in 8 bit is 255.
 m=255
+# In the 8 bit case, 2 hex digits are required to represent a number.
 printf_pattern="%02x"
 
 # read argv[1]
